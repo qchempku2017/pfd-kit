@@ -53,7 +53,7 @@ class DPTrain(Train):
         optional_files: Optional[List[Path]]=None,
         #**kwargs
         ):
-        
+        train_dict = self._process_script(train_dict)
         if (not init_data or len(init_data) == 0) and not iter_data:
             raise FatalError(
                 "At least one data source must be provided: "
@@ -100,7 +100,7 @@ class DPTrain(Train):
         else:
             valid_data = None
             
-            
+        
         if "systems" in train_dict["training"]:
             major_version = "1"
         else:
@@ -170,7 +170,7 @@ class DPTrain(Train):
         fplog.write("#=================== train std err ===================\n")
         fplog.write(err)
 
-        if finetune_mode == "finetune" and os.path.exists("input_v2_compat.json"):
+        if finetune_mode == True and os.path.exists("input_v2_compat.json"):
             shutil.copy2("input_v2_compat.json", train_script_name)
 
         # freeze model
@@ -297,7 +297,7 @@ class DPTrain(Train):
         # case of init model and finetune
         assert checkpoint is None
         case_init_model = do_init_model and (not init_model_with_finetune)
-        case_finetune = finetune_mode == "finetune" or (
+        case_finetune = finetune_mode == True or (
             do_init_model and init_model_with_finetune
             )
         if case_init_model:

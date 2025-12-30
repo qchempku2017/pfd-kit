@@ -1,3 +1,4 @@
+tqdm
 numpy==2.3.5
 dpdata==1.0.0
 pydflow==1.8.95

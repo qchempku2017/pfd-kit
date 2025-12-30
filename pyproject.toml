@@ -33,6 +33,7 @@ dependencies = [
     "dpdispatcher",
     "pymatgen>=2025.10.7",
     "monty",
+    "tqdm",
 ]
 
 [project.urls]

@@ -43,5 +43,16 @@ class TestStructureUtils(unittest.TestCase):
         indices = structure_utils.get_z_range_indices(self.struct, 0.05, 0.11)
         self.assertEqual(indices, [1])
 
+    def test_deduplicate_structures(self):
+        struct1 = self.struct.copy()
+        struct2 = self.struct.copy()
+        struct3 = Structure(
+            Lattice.cubic(3.0), ["Li", "O"], [[0, 0, 0], [0.5, 0.5, 0.5]]
+        )
+        structs = [struct1, struct2, struct3]
+        deduped = structure_utils.deduplicate_structures(structs)
+        self.assertEqual(len(deduped), 2)  # struct1 and struct2 are duplicates
+
+
 if __name__ == "__main__":
     unittest.main()

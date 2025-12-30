@@ -21,6 +21,7 @@ from pfd.utils import (
     perturb
 )
 from pfd.utils.slab_utils import generate_slabs_with_random_vacancies
+from pfd.utils.interface_utils import generate_interfaces_with_random_vacancies
 
 from ase import Atoms
 from ase.io import read,write
@@ -128,4 +129,50 @@ def slab_cli(
                 slab_data[keyname]["vac_names"] = vac_names
                 vac_slabs_atoms = [AseAtomsAdaptor.get_atoms(slab) for slab in vac_slabs]
                 write(keyname+".extxyz", vac_slabs_atoms, format='extxyz')
-    dumpfn(slab_data, "slab_data.json")
+    dumpfn(slab_data, "slab_data.json")  # save slab data for audit.
+
+
+def interface_cli(
+        film_atoms_path: Union[str, Path],
+        substrate_atoms_path: Union[str, Path],
+        film_miller: Tuple[int, int, int],
+        substrate_miller: Tuple[int, int, int],
+        **kwargs,
+    ):
+    """A CLI function to create interfaces from file paths.
+
+    Currently, only support single film and single substrate structure, and single miller
+    index for each.
+
+    Args:
+        film_atoms_path: File path containing film structure.
+        substrate_atoms_path: File path containing substrate structure.
+        film_miller: Miller index for film slab generation.
+        substrate_miller: Miller index for substrate slab generation.
+        **kwargs: Additional arguments for interface generation. See `generate_interfaces_with_random_vacancies`
+        in `pfd.utils.interface_utils` for details.
+    """
+    interface_data = {}
+    film_atoms = read(film_atoms_path, index=0)
+    substrate_atoms = read(substrate_atoms_path, index=0)
+    film_name = Path(film_atoms_path).stem
+    substrate_name = Path(substrate_atoms_path).stem
+    vac_names, vac_interfaces, interfaces = generate_interfaces_with_random_vacancies(
+        AseAtomsAdaptor.get_structure(film_atoms),
+        AseAtomsAdaptor.get_structure(substrate_atoms),
+        film_miller=film_miller,
+        substrate_miller=substrate_miller,
+        **kwargs,
+    )
+    keyname = (
+        f"film_{film_name}_miller"
+        f"_{film_miller[0]}_{film_miller[1]}_{film_miller[2]}"
+        f"_substrate_{substrate_name}_miller"
+        f"_{substrate_miller[0]}_{substrate_miller[1]}_{substrate_miller[2]}"
+    )
+    interface_data[keyname] = {}
+    interface_data[keyname]["interfaces"] = interfaces
+    interface_data[keyname]["vac_names"] = vac_names
+    vac_interface_atoms = [AseAtomsAdaptor.get_atoms(interface) for interface in vac_interfaces]
+    write(keyname + ".extxyz", vac_interface_atoms, format='extxyz')
+    dumpfn(interface_data, "interface_data.json")  # save interface data for audit.

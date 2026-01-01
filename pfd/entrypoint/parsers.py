@@ -530,6 +530,168 @@ def add_parser_interface(subparsers: argparse._SubParsersAction):
     return parser_interface
 
 
+def add_parser_gb(subparsers: argparse._SubParsersAction):
+    #########################################
+    # gb
+    parser_gb = subparsers.add_parser(
+        "gb",
+        help="Generate grain boundaries from structures with optional random site vacancies",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser_gb.add_argument(
+        "ATOM",
+        type=str,
+        help="Path to the primitive structure file (single file only), recommend conventional cell.",
+    )
+    parser_gb.add_argument(
+        "--rotation-axis",
+        type=str,
+        required=True,
+        help="Rotation axis as a string of three integers, e.g. '1 0 0'",
+    )
+    parser_gb.add_argument(
+        "--rotation-angle",
+        type=float,
+        required=True,
+        help="Rotation angle in degrees.",
+    )
+    parser_gb.add_argument(
+        "--grain-plane",
+        type=str,
+        default=None,
+        help="Grain boundary plane normal vector as a string of three integers, e.g. '0 0 1'. If not set, will be"
+             " perpendicular to rotation axis.",
+    )
+    parser_gb.add_argument(
+        "--n-shifts-per-ab-direction",
+        type=int,
+        default=5,
+        help="Number of shifts to sample along a and b directions.",
+    )
+    parser_gb.add_argument(
+        "--expand-times",
+        type=int,
+        default=4,
+        help="Number of times to expand the grain boundary structure along c direction.",
+    )
+    parser_gb.add_argument(
+        "--min-ab-size",
+        type=float,
+        default=10.0,
+        help="Minimum size of the grain boundary structure along a and b directions (Angstrom).",
+    )
+    parser_gb.add_argument(
+        "--vacuum-thickness",
+        type=float,
+        default=0.0,
+        help="Thickness of vacuum layer to add along c direction (Angstrom).",
+    )
+    parser_gb.add_argument(
+        "--c-normal",
+        action="store_true",
+        help="Whether to search for a supercell such that the grain boundary plane is normal to c direction.",
+    )
+    parser_gb.add_argument(
+        "--ratio",
+        type=int,
+        nargs='+',
+        default=None,
+        help="Lattice axial ratio (list of integers). Typically not needed.",
+    )
+    parser_gb.add_argument(
+        "--symprec",
+        type=float,
+        default=0.1,
+        help="Symmetry precision for space group analysis.",
+    )
+    parser_gb.add_argument(
+        "--angle-tol",
+        type=float,
+        default=5,
+        help="Angle tolerance for space group analysis (degrees).",
+    )
+    parser_gb.add_argument(
+        "--max-search",
+        type=int,
+        default=20,
+        help="Maximum number of attempts to find coincidence site lattice.",
+    )
+    parser_gb.add_argument(
+        "--coincidence-tol",
+        type=float,
+        default=1e-6,
+        help="Tolerance for coincidence site lattice search.",
+    )
+    parser_gb.add_argument(
+        "--rm-ratio",
+        type=float,
+        default=0.7,
+        help="Ratio for thresholding minimum interatomic distance relative to bulk.",
+    )
+    parser_gb.add_argument(
+        "--remove-atom-types",
+        type=str,
+        nargs='+',
+        default=None,
+        help="List of atom types to consider for removal. If not set, all atom types are considered.",
+    )
+    parser_gb.add_argument(
+        "--min-vacancy-ratio",
+        type=float,
+        default=0.0,
+        help="Minimum ratio of grain boundary sites to remove.",
+    )
+    parser_gb.add_argument(
+        "--max-vacancy-ratio",
+        type=float,
+        default=0.3,
+        help="Maximum ratio of grain boundary sites to remove.",
+    )
+    parser_gb.add_argument(
+        "--num-vacancy-ratios",
+        type=int,
+        default=1,
+        help="Number of vacancy ratios to sample between min and max.",
+    )
+    parser_gb.add_argument(
+        "--n-sample-per-ratio",
+        type=int,
+        default=5,
+        help="Number of samples to generate per vacancy ratio.",
+    )
+    parser_gb.add_argument(
+        "--vacancy-depth",
+        type=float,
+        default=3.0,
+        help="Depth from the grain boundary plane to consider for vacancy formation (Angstrom).",
+    )
+    parser_gb.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Random seed for reproducibility.",
+    )
+    parser_gb.add_argument(
+        "--detect-isolated-atom-range",
+        type=float,
+        default=3.0,
+        help="Distance threshold to detect isolated atoms after removal (Angstrom).",
+    )
+    parser_gb.add_argument(
+        "--no-remove-isolated-atom",
+        action="store_false",
+        dest="remove_isolated_atom",
+        help="Do not remove isolated atoms after vacancy formation.",
+    )
+    parser_gb.add_argument(
+        "--max-return-gbs",
+        type=int,
+        default=500,
+        help="Maximum number of grain boundary structures to return. If more are generated, random sampling is applied.",
+    )
+    return parser_gb
+
+
 def add_parser_status(subparsers: argparse._SubParsersAction):
     #########################################
     # status
@@ -571,6 +733,7 @@ def main_parser() -> argparse.ArgumentParser:
     _ = add_parser_slab(subparsers)
     _ = add_parser_status(subparsers)
     _ = add_parser_interface(subparsers)
+    _ = add_parser_gb(subparsers)
 
     # Add the version argument
     parser.add_argument(
@@ -638,5 +801,21 @@ def parse_args(args: Optional[List[str]] = None):
                     f"Failed to parse --structure-matcher-kwargs: {args.structure_matcher_kwargs}."
                     " It must be a valid JSON string."
                 ) from e
+
+    if getattr(args, 'command', None) == 'gb':
+        # Process rotation_axis and grain_plane for gb command
+        try:
+            args.rotation_axis = tuple(map(int, args.rotation_axis.split()))
+            if len(args.rotation_axis) != 3:
+                raise ValueError("Rotation axis must have exactly three integers.")
+            if args.grain_plane is not None:
+                args.grain_plane = tuple(map(int, args.grain_plane.split()))
+                if len(args.grain_plane) != 3:
+                    raise ValueError("Grain plane must have exactly three integers.")
+        except Exception as e:
+            raise ValueError(
+                f"Failed to parse --rotation-axis: {args.rotation_axis} or --grain-plane: {args.grain_plane}."
+                f" Each must be a string of three integers, e.g. '1 0 0'."
+            ) from e
 
     return parsed_args

@@ -22,6 +22,7 @@ from pfd.utils import (
 )
 from pfd.utils.slab_utils import generate_slabs_with_random_vacancies
 from pfd.utils.interface_utils import generate_interfaces_with_random_vacancies
+from pfd.utils.gb_utils import generate_gbs_with_random_vacancies
 
 from ase import Atoms
 from ase.io import read,write
@@ -176,3 +177,45 @@ def interface_cli(
     vac_interface_atoms = [AseAtomsAdaptor.get_atoms(interface) for interface in vac_interfaces]
     write(keyname + ".extxyz", vac_interface_atoms, format='extxyz')
     dumpfn(interface_data, "interface_data.json")  # save interface data for audit.
+
+
+def gb_cli(
+        prim_path: Union[str,Path],
+        rotation_axis: Tuple[int,int,int],
+        rotation_angle: float,
+        grain_plane: Tuple[int,int,int],
+        **kwargs,
+):
+    """A CLI function to create grain boundaries from file paths.
+
+    Currently, only support single bulk primitive structure.
+
+    Args:
+        prim_path: File path containing bulk primitive structure.
+        rotation_axis: Rotation axis for grain boundary generation.
+        rotation_angle: Rotation angle (in degrees) for grain boundary generation.
+        grain_plane: Grain boundary plane for grain boundary generation.
+        **kwargs: Additional arguments for grain boundary generation. See `generate_grain_boundaries_with_random_vacancies`
+        in `pfd.utils.gb_utils` for details.
+    """
+    gb_data = {}
+    prim_atoms = read(prim_path, index=0)
+    prim_name = Path(prim_path).stem
+    vac_names, vac_gbs, gbs = generate_gbs_with_random_vacancies(
+        AseAtomsAdaptor.get_structure(prim_atoms),
+        rotation_axis=rotation_axis,
+        rotation_angle=rotation_angle,
+        grain_plane=grain_plane,
+        **kwargs,
+    )
+    keyname = (
+        f"{prim_name}_rotaxis_{rotation_axis[0]}_{rotation_axis[1]}_{rotation_axis[2]}"
+        f"_rotangle_{rotation_angle}"
+        f"_gbplane_{grain_plane[0]}_{grain_plane[1]}_{grain_plane[2]}"
+    )
+    gb_data[keyname] = {}
+    gb_data[keyname]["gbs"] = gbs
+    gb_data[keyname]["vac_names"] = vac_names
+    vac_gb_atoms = [AseAtomsAdaptor.get_atoms(gb) for gb in vac_gbs]
+    write(keyname + ".extxyz", vac_gb_atoms, format='extxyz')
+    dumpfn(gb_data, "gb_data.json")  # save gb data for audit.

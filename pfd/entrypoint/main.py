@@ -12,6 +12,7 @@ from .common import (
     perturb_cli,
     slab_cli,
     interface_cli,
+    gb_cli,
 )
 
 from pfd.entrypoint.parsers import parse_args
@@ -117,8 +118,8 @@ def main():
         )
     elif args.command == "interface":
         interface_cli(
-            film_atoms_path=args.film,
-            substrate_atoms_path=args.substrate,
+            film_atoms_path=args.FILM,
+            substrate_atoms_path=args.SUBSTRATE,
             film_miller=args.film_miller,
             substrate_miller=args.substrate_miller,
             symprec=args.symprec,
@@ -150,7 +151,33 @@ def main():
             seed=args.seed,
             max_return_interfaces=args.max_return_interfaces,
         )
-    elif args.command is None:
-        pass
+    elif args.command == "gb":
+        gb_cli(
+            prim_path=args.ATOM,
+            rotation_axis=args.rotation_axis,
+            rotation_angle=args.rotation_angle,
+            grain_plane=args.grain_plane,
+            n_shifts_per_ab_direction=args.n_shifts_per_ab_direction,
+            expand_times=args.expand_times,
+            min_ab_size=args.min_ab_size,
+            vacuum_thickness=args.vacuum_thickness,
+            c_normal=args.c_normal,
+            ratio=args.ratio,
+            symprec=args.symprec,
+            angle_tol=args.angle_tol,
+            max_search=args.max_search,
+            coincidence_tol=args.coincidence_tol,
+            rm_ratio=args.rm_ratio,
+            remove_atom_types=args.remove_atom_types,
+            min_vacancy_ratio=args.min_vacancy_ratio,
+            max_vacancy_ratio=args.max_vacancy_ratio,
+            num_vacancy_ratios=args.num_vacancy_ratios,
+            n_sample_per_ratio=args.n_sample_per_ratio,
+            vacancy_depth=args.vacancy_depth,
+            seed=args.seed,
+            detect_isolated_atom_range=args.detect_isolated_atom_range,
+            remove_isolated_atom=args.remove_isolated_atom,
+            max_return_gbs=args.max_return_gbs,
+        )
     else:
         raise RuntimeError(f"unknown command {args.command}")

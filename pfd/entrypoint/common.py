@@ -3,7 +3,6 @@ from pathlib import (
     Path,
 )
 from typing import (
-    Dict,
     List,
     Optional,
     Union,
@@ -24,7 +23,6 @@ from pfd.utils.slab_utils import generate_slabs_with_random_vacancies
 from pfd.utils.interface_utils import generate_interfaces_with_random_vacancies
 from pfd.utils.gb_utils import generate_gbs_with_random_vacancies
 
-from ase import Atoms
 from ase.io import read,write
 
 

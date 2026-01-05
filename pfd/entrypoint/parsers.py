@@ -68,6 +68,11 @@ def add_parser_resubmit(subparsers: argparse._SubParsersAction):
         action="store_false",
         help="Keep monitering the progress",
     )
+    parser_resubmit.add_argument(
+        "--unsuccessful-step-keys",
+        action="store_true",
+        help="List and reuse all unsuccessful step keys from previous workflow",
+    )
     return parser_resubmit
 
 

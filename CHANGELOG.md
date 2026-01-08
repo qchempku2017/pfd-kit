@@ -2,6 +2,20 @@
 
 <!-- version list -->
 
+## v0.2.3 (2026-01-08)
+
+### Bug Fixes
+
+- Issues with entropy filtering with gpu
+  ([`a6cb151`](https://github.com/qchempku2017/pfd-kit/commit/a6cb151f48ce1532308b00a25cb8b62420f3144b))
+
+- Issues with pressure unit
+  ([`d3f7fbd`](https://github.com/qchempku2017/pfd-kit/commit/d3f7fbdb8df07ac4b8b54975107171c5cafa0388))
+
+- Update resubmit args
+  ([`0565655`](https://github.com/qchempku2017/pfd-kit/commit/0565655dceede963bd5764b502a61c6227029ce5))
+
+
 ## v0.10.9 (2026-01-07)
 
 ### Bug Fixes

@@ -2,18 +2,15 @@
 
 <!-- version list -->
 
-## v0.2.3 (2026-01-08)
+## v0.10.10 (2026-01-25)
 
 ### Bug Fixes
 
-- Issues with entropy filtering with gpu
-  ([`a6cb151`](https://github.com/qchempku2017/pfd-kit/commit/a6cb151f48ce1532308b00a25cb8b62420f3144b))
+- Issues with NoneType in select_confs.py
+  ([`051de33`](https://github.com/ruoyuwang1995nya/pfd-kit/commit/051de33f4c119561b24ee69af0400d64b993354d))
 
-- Issues with pressure unit
-  ([`d3f7fbd`](https://github.com/qchempku2017/pfd-kit/commit/d3f7fbdb8df07ac4b8b54975107171c5cafa0388))
-
-- Update resubmit args
-  ([`0565655`](https://github.com/qchempku2017/pfd-kit/commit/0565655dceede963bd5764b502a61c6227029ce5))
+- Issues with wrong pressure writeout
+  ([`5bb9e9b`](https://github.com/ruoyuwang1995nya/pfd-kit/commit/5bb9e9b7ef689af97b4cf613ebfc517e4ba88f44))
 
 
 ## v0.10.9 (2026-01-07)

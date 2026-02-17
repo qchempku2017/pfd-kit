@@ -2,15 +2,15 @@
 
 <!-- version list -->
 
-## v0.2.4 (2026-01-27)
+## v0.10.11 (2026-02-11)
 
 ### Bug Fixes
 
-- Issues with NoneType in select_confs.py
-  ([`051de33`](https://github.com/qchempku2017/pfd-kit/commit/051de33f4c119561b24ee69af0400d64b993354d))
+- Add support for pytest
+  ([`6d4a166`](https://github.com/ruoyuwang1995nya/pfd-kit/commit/6d4a166aee6a62ea0a24dea9f238187b08103059))
 
-- Issues with wrong pressure writeout
-  ([`5bb9e9b`](https://github.com/qchempku2017/pfd-kit/commit/5bb9e9b7ef689af97b4cf613ebfc517e4ba88f44))
+- Relax perturbation test thresholds and ensure bond lengths within ±10%
+  ([`1a7a97e`](https://github.com/ruoyuwang1995nya/pfd-kit/commit/1a7a97e36bcdd98804f28a8a45f746df740cb4dd))
 
 
 ## v0.10.10 (2026-01-25)

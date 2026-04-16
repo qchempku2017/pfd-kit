@@ -1,4 +1,5 @@
 import argparse
+import ast
 import textwrap
 from typing import (
     List,
@@ -208,7 +209,8 @@ def add_parser_slab(subparsers: argparse._SubParsersAction):
         "ATOMS",
         type=str,
         nargs="+",
-        help="the structure files to generate slabs, support multiple files.",
+        help="the structure files to generate slabs, support multiple files. Parsed with pymatgen,"
+             " so one structure per file. CIF recommended.",
     )
     parser_slab.add_argument(
         "-m",
@@ -254,6 +256,18 @@ def add_parser_slab(subparsers: argparse._SubParsersAction):
         type=int,
         default=20,
         help="Maximum integer supercell factor to search for a normal c direction.",
+    )
+    parser_slab.add_argument(
+        "--bonds-to-keep",
+        type=ast.literal_eval,
+        default=None,
+        help="""Bonds to be kept during slab cleavage. Used to keep polyhedral substructures.
+        Check pymatgen.core.SlabGenerator for further details. Format:\n
+        pfd slab ... --bonds-to-keep "{('P', 'S'): 2.0}".
+        Make sure to check the form of species in your input structures and use the same form
+        in the bonds_to_keep dict. For example, if species are in form of Specie with oxidation
+        state, use ('P5+', 'S2-').
+        """
     )
     parser_slab.add_argument(
         "--symmetrize-slab",

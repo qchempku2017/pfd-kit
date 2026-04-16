@@ -1,4 +1,5 @@
 import argparse
+import ast
 import json
 import logging
 import textwrap
@@ -272,11 +273,11 @@ def main_parser() -> argparse.ArgumentParser:
     )
     parser_slab.add_argument(
         "--bonds-to-keep",
-        type=json.loads,
+        type=ast.literal_eval,
         default=None,
         help="Dictionary specifying bonds between species with maximum bond length"
              " to keep when cleaving slabs. See pymatgen.core.SlabGenerator for details. Format:"
-             """pfd slab xxx --bonds-to-keep '{("Fe", "O"): 1.5}' """,
+             """pfd slab xxx --bonds-to-keep "{('P','S'): 2.0}" """,
     )
     parser_slab.add_argument(
         "--symmetrize-slab",

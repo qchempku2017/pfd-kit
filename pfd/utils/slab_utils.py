@@ -125,6 +125,7 @@ def get_slabs(
         max_normal_search=max_normal_search
     )
     slabs = generator.get_slabs(bonds=bonds_to_keep, symmetrize=symmetrize_slab)
+    logger.info(f"Generated {len(slabs)} slabs before Tasker modification and dropping polar slabs.")
     final_slabs = []
     if tasker2_modify_polar:
         for slab in slabs:
@@ -135,10 +136,12 @@ def get_slabs(
                 final_slabs.append(slab)
     else:
         final_slabs = slabs
+    logger.info(f"Generated {len(final_slabs)} slabs after Tasker modification.")
 
     # Drop slabs failing tasker correction.
     if drop_polar:
         final_slabs = [slab for slab in final_slabs if not slab.is_polar()]
+        logger.info(f"Generated {len(final_slabs)} slabs after dropping polar slabs.")
 
     # Tasker modification before supercell construction.
     for slab in final_slabs:

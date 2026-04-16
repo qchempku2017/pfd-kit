@@ -276,8 +276,13 @@ def main_parser() -> argparse.ArgumentParser:
         type=ast.literal_eval,
         default=None,
         help="Dictionary specifying bonds between species with maximum bond length"
-             " to keep when cleaving slabs. See pymatgen.core.SlabGenerator for details. Format:"
-             """pfd slab xxx --bonds-to-keep "{('P','S'): 2.0}" """,
+             " to keep when cleaving slabs. See pymatgen.core.SlabGenerator for details."
+             " Format:"
+             """pfd slab xxx --bonds-to-keep "{('P','S'): 2.0}" """
+             " Note: since initial primitive structures are loaded with ase,"
+             " which does not keep charge information, make sure to always use only element symbols"
+             " rather than species symbols such as 'P5+' in the keys!"
+        ,
     )
     parser_slab.add_argument(
         "--symmetrize-slab",

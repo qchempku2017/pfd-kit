@@ -224,7 +224,9 @@ def main_parser() -> argparse.ArgumentParser:
         "ATOMS",
         type=str,
         nargs="+",
-        help="the structure files to generate slabs, support multiple files.",
+        help="the structure files to generate slabs, support multiple files."
+             " Reads with pymatgen, each file should contain only one structure."
+             " CIF recommended.",
     )
     parser_slab.add_argument(
         "-m",
@@ -279,9 +281,7 @@ def main_parser() -> argparse.ArgumentParser:
              " to keep when cleaving slabs. See pymatgen.core.SlabGenerator for details."
              " Format:"
              """pfd slab xxx --bonds-to-keep "{('P','S'): 2.0}" """
-             " Note: since initial primitive structures are loaded with ase,"
-             " which does not keep charge information, make sure to always use only element symbols"
-             " rather than species symbols such as 'P5+' in the keys!"
+             "Note: check the corresponding species in your input file in advance."
         ,
     )
     parser_slab.add_argument(

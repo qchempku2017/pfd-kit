@@ -13,6 +13,7 @@ import os
 import dflow
 
 from monty.serialization import dumpfn
+from pymatgen.core import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
 
 from pfd.utils import (
@@ -106,26 +107,26 @@ def slab_cli(
     """A CLI function to create slabs from file paths.
 
     Args:
-        atoms_path_ls: List of file paths containing structures.
+        atoms_path_ls: List of file paths containing structures. Need to be supported by pymatgen.
         miller_indices: List of Miller indices for slab generation.
         **kwargs: Additional arguments for slab generation. See `generate_slabs_with_random_vacancies`
         in `pfd.utils.slab_utils` for details.
     """
     slab_data = {}
     for atoms_path in atoms_path_ls:
-        atoms_ls = read(atoms_path,index=':')
+        # Change to pymatgen reader. Each file now should only contain one structure.
+        struct = Structure.from_file(atoms_path)
         name = Path(atoms_path).stem
-        for atoms_id, atoms in enumerate(atoms_ls):
-            for miller_index in miller_indices:
-                vac_names, vac_slabs, slabs = generate_slabs_with_random_vacancies(
-                    AseAtomsAdaptor.get_structure(atoms),
-                    miller_index=miller_index,
-                    **kwargs,
-                )
-                keyname = f"{name}_{atoms_id}_miller_{miller_index[0]}_{miller_index[1]}_{miller_index[2]}"
-                slab_data[keyname] = {}
-                slab_data[keyname]["slabs"] = slabs
-                slab_data[keyname]["vac_names"] = vac_names
-                vac_slabs_atoms = [AseAtomsAdaptor.get_atoms(slab) for slab in vac_slabs]
-                write(keyname+".extxyz", vac_slabs_atoms, format='extxyz')
+        for miller_index in miller_indices:
+            vac_names, vac_slabs, slabs = generate_slabs_with_random_vacancies(
+                struct,
+                miller_index=miller_index,
+                **kwargs,
+            )
+            keyname = f"{name}_0_miller_{miller_index[0]}_{miller_index[1]}_{miller_index[2]}"
+            slab_data[keyname] = {}
+            slab_data[keyname]["slabs"] = slabs
+            slab_data[keyname]["vac_names"] = vac_names
+            vac_slabs_atoms = [AseAtomsAdaptor.get_atoms(slab) for slab in vac_slabs]
+            write(keyname+".extxyz", vac_slabs_atoms, format='extxyz')
     dumpfn(slab_data, "slab_data.json")

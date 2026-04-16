@@ -1,5 +1,8 @@
 import json
+import argparse
+import ast
 import logging
+import textwrap
 from typing import (
     List,
     Optional,
@@ -8,6 +11,7 @@ from typing import (
 from pfd.utils.download_pfd_artifacts import (
     print_op_download_setting,
 )
+from pfd import __version__
 from .download import download, download_by_def, download_end_result
 from .status import status
 from .submit import FlowGen, resubmit_workflow
@@ -142,6 +146,7 @@ def main():
             min_slab=args.min_slab,
             min_vac=args.min_vac,
             max_normal_search=args.max_normal_search,
+            bonds_to_keep=args.bonds_to_keep,
             symmetrize_slab=args.symmetrize_slab,
             tasker2_modify_polar=args.tasker2_modify_polar,
             drop_polar=args.drop_polar,

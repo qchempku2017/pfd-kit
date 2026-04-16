@@ -71,6 +71,7 @@ def get_slabs(
         min_slab: float=12.0,
         min_vac: float=20.0,
         max_normal_search: int=20,
+        bonds_to_keep: Optional[dict[tuple[Species | Element, Species | Element], float]] = None,
         symmetrize_slab: bool=False,
         tasker2_modify_polar: bool=True,
         drop_polar: bool=True,
@@ -94,6 +95,12 @@ def get_slabs(
         max_normal_search (int, optional):
             Determines maximum integer supercell factor to search for a normal c direction.
             Defaults to 20.
+        bonds_to_keep (dict[tuple[Species | Element, Species | Element], float], optional):
+            Dictionary specifying bonds between species with maximum bond length to keep when cleaving
+            slabs. For example, {("Fe", "O"): 2.5} means to never break Fe-O bonds under 2.5 Angstrom long
+            when creating surface slabs. If None, any bond can be broken. This is often used to keep
+            polyhedral anions intact. See pymatgen.core.SlabGenerator for details.
+            Defaults to None.
         symmetrize_slab (bool, optional):
             Whether to symmetrize the slab. Defaults to False as it may lead to high search cost.
         tasker2_modify_polar (bool, optional): Whether to apply Tasker 2 modification to polar slabs.
@@ -117,7 +124,7 @@ def get_slabs(
         primitive=True,
         max_normal_search=max_normal_search
     )
-    slabs = generator.get_slabs(symmetrize=symmetrize_slab)
+    slabs = generator.get_slabs(bonds=bonds_to_keep, symmetrize=symmetrize_slab)
     final_slabs = []
     if tasker2_modify_polar:
         for slab in slabs:
@@ -417,6 +424,7 @@ def generate_slabs_with_random_vacancies(
         min_slab: float=12.0,
         min_vac: float=20.0,
         max_normal_search: int=20,
+        bonds_to_keep: Optional[dict[tuple[Species | Element, Species | Element], float]] = None,
         symmetrize_slab: bool=False,
         tasker2_modify_polar: bool=True,
         drop_polar: bool=True,
@@ -447,6 +455,12 @@ def generate_slabs_with_random_vacancies(
         max_normal_search (int, optional):
             Determines maximum integer supercell factor to search for a normal c direction.
             Defaults to 20.
+        bonds_to_keep (dict[tuple[Species | Element, Species | Element], float], optional):
+            Dictionary specifying bonds between species with maximum bond length to keep when cleaving
+            slabs. For example, {("Fe", "O"): 2.5} means to never break Fe-O bonds under 2.5 Angstrom
+            long when creating surface slabs. If None, any bond can be broken. This is often used to
+            keep polyhedral anions intact.
+            See pymatgen.core.SlabGenerator for details. Defaults to None.
         symmetrize_slab (bool, optional):
             Whether to symmetrize the slab. Defaults to False as it may lead to high search cost.
         tasker2_modify_polar (bool, optional): Whether to apply Tasker 2 modification to polar slabs.
@@ -490,6 +504,7 @@ def generate_slabs_with_random_vacancies(
         symprec=symprec, angle_tol=angle_tol,
         min_slab_ab=min_slab_ab, min_slab=min_slab, min_vac=min_vac,
         max_normal_search=max_normal_search,
+        bonds_to_keep=bonds_to_keep,
         symmetrize_slab=symmetrize_slab,
         tasker2_modify_polar=tasker2_modify_polar,
         drop_polar=drop_polar,

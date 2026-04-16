@@ -1,5 +1,4 @@
 import argparse
-from ast import parse
 import json
 import logging
 import textwrap
@@ -272,6 +271,14 @@ def main_parser() -> argparse.ArgumentParser:
         help="Maximum integer supercell factor to search for a normal c direction.",
     )
     parser_slab.add_argument(
+        "--bonds-to-keep",
+        type=json.loads,
+        default=None,
+        help="Dictionary specifying bonds between species with maximum bond length"
+             " to keep when cleaving slabs. See pymatgen.core.SlabGenerator for details. Format:"
+             """pfd slab xxx --bonds-to-keep '{("Fe", "O"): 1.5}' """,
+    )
+    parser_slab.add_argument(
         "--symmetrize-slab",
         action="store_true",
         help="Whether to symmetrize the slab.",
@@ -492,6 +499,7 @@ def main():
             min_slab=args.min_slab,
             min_vac=args.min_vac,
             max_normal_search=args.max_normal_search,
+            bonds_to_keep=args.bonds_to_keep,
             symmetrize_slab=args.symmetrize_slab,
             tasker2_modify_polar=args.tasker2_modify_polar,
             drop_polar=args.drop_polar,

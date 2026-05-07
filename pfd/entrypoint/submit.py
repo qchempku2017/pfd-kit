@@ -304,10 +304,16 @@ class FlowGen:
         upload_python_packages = []
         if custom_packages := config.get("upload_python_packages"):
             upload_python_packages.extend(custom_packages)
-        upload_python_packages.extend(list(dpdata.__path__))
-        upload_python_packages.extend(list(dflow.__path__))
-        upload_python_packages.extend(list(pfd.__path__))
-        upload_python_packages.extend(list(ase.__path__))
+
+        # 20260507: remove automatic upload of python packages.
+        # Users now have to ensure all images used by workflow
+        # contains a complete installation of pfd-kit.
+        # This is for the sake of stable dependency import chain,
+        # as some packages that requires online compilation will
+        # not run even after fully uploading its repository.
+
+        # Old entrypoint preserves the upload_python_package parameter,
+        # but we do not recommend using it!
         
         
         ##### task configs

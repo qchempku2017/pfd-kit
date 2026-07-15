@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.10.12 (2026-07-15)
+
+### Bug Fixes
+
+- Update input name init_model in download settings to fix downloading issue and enhance download
+  command helper text.
+  ([`7814f41`](https://github.com/ruoyuwang1995nya/pfd-kit/commit/7814f410f4314a8ba0ba10b7be37198998f1cdf4))
+
+
 ## v0.2.5 (2026-02-17)
 
 ### Bug Fixes

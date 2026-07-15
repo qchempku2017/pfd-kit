@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.10.13 (2026-07-15)
+
+### Bug Fixes
+
+- Version in __init__.py
+  ([`ea2507f`](https://github.com/ruoyuwang1995nya/pfd-kit/commit/ea2507fc07d4cfcbd2a27d47267c88a3fc575ffe))
+
+
 ## v0.10.12 (2026-07-15)
 
 ### Bug Fixes

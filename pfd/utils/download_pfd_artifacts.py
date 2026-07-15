@@ -53,7 +53,8 @@ class DownloadDefinition:
 
 op_download_setting = {
     "train": DownloadDefinition()
-    .add_input("init_models")
+    # By no later than v0.10.11, init_models refactored into init_model.
+    .add_input("init_model")
     .add_input("init_data")
     .add_input("iter_data")
     .add_output("script")

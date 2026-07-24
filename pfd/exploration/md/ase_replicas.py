@@ -15,7 +15,7 @@ from ase import units, Atoms
 from ase.calculators.calculator import Calculator
 from ase.io import read, Trajectory
 from ase.md.langevin import Langevin
-from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
+from ase.md.velocitydistribution import Stationary
 
 from pfd.utils.optimize_struct_utils import relax_structure_ase
 from pfd.constants import ase_log_name, ase_traj_name
@@ -82,7 +82,16 @@ def initialize_replicas(
         a.set_cell(fixed_cell, scale_atoms=False)
 
         # Initialize velocities from Maxwell distribution at this replica temperature
-        MaxwellBoltzmannDistribution(a, temperature_K=T, rng=rng)
+        # Compatibility: ase 3.29 removes MaxwellBoltzmannDistribution
+        try:
+            from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
+            MaxwellBoltzmannDistribution(a, temperature_K=T, rng=rng)
+        except Exception:
+            from ase.md.velocitydistribution import thermalize_momenta
+            thermalize_momenta(a, temperature_K=T, rng=rng)
+
+        # Remove translational momentum.
+        Stationary(a)
 
         logname_part1 = '.'.join(log_file.split('.')[:-1])
         logname_part2 = log_file.split('.')[-1]

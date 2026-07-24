@@ -12,6 +12,19 @@ Install PFD-kit directly from the source using `pip`:
 pip install git+https://github.com/ruoyuwang1995nya/pfd-kit.git
 ```
 
+## Image preparation
+Starting from version 0.11.0, PFD-kit now longer encourages the users
+to use the old upload_python_package argument in configuration files.
+This is for the sake of stable import chain, as some new dependencies,
+such as `lmdb` required by `dpdata>=1.0.1`, will need dynamic cython
+compilation during installation, which may cause unexpected errors 
+when running the workflow. 
+
+Instead, we recommend users to prepare custom images with PFD-kit and
+all its dependencies pre-installed. Note that both the base image, the
+vasp image and the deepmd-kit image must contain a full installation of
+PFD-kit as it will no longer be uploaded.
+
 ## Job Submission
 PFD-kit provides a simple CLI interface. For example, submit a fine-tuning workflow with:
 ```shell

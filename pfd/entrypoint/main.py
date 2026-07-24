@@ -106,7 +106,17 @@ def main_parser() -> argparse.ArgumentParser:
     parser_download = subparsers.add_parser(
         "download",
         help=(
-            "Download the artifacts of PFD workflow steps. User needs to provide the input json file as well as the workflow ID. The command would then download the end model if workflow is successfully completed.\n"
+            "Download the artifacts of PFD workflow steps."
+            " User needs to provide the input json file as well as the workflow ID."
+            " User can choose from two mutually exclusive downloading styles :\n"
+            " 1) specify the keys of the steps to be downloaded by using option -k; A typical step key looks like"
+            " iter-xxx--yyyy, where xxx is the iteration number and yyyy is the OP step name."
+            " use -l to see available step names first, and use `pfd status` to see available iteration numbers.\n"
+            " 2) specify the step definitions to be downloaded by using option -d and option -i."
+            " A typical example definition looks like a path: train/input/init_data.\n"
+            " If neither of them is provided, will download the end model and its training data by default only,"
+            " which is the model after the last iteration. \n"
+            " The command would then download the end model if workflow is successfully completed.\n"
         ),
         description=(
             textwrap.dedent(
